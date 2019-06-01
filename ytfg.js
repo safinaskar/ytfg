@@ -16,16 +16,25 @@ const ytfg = {
     });
   },
 
-  // Для, например, chrome.devtools.inspectedWindow.eval . Загрузить сперва вспомогательный скрипт нельзя, иначе будет загрязнено пространство имён. Поэтому приходится именно представить функцию в виде строки. В будущем можно попробовать заменить этот механизм на загрузку содержимого этого скрипта с помощью chrome.runtime.getPackageDirectoryEntry
-  promisifyAsString: `(f => {
-    return (...args) => new Promise((resolve, reject) => {
-      args.push(result => {
-        if(chrome.runtime.lastError){
-          reject(Error(chrome.runtime.lastError.message));
-        }
-        resolve(result);
+  // Asynchronous DirectoryEntry
+  ade: {
+    getFile(entry, path, options){
+      return new Promise((resolve, reject) => {
+        entry.getFile(path, options, resolve, error => { reject(Error(error.message)); });
       });
-      f.apply(null, args);
-    });
-  })`
+    }
+  },
+
+  // Asynchronous FileEntry
+  afe: {
+    file(entry){
+      return new Promise((resolve, reject) => {
+        entry.file(resolve, error => { reject(Error(error.message)); });
+      });
+    }
+  },
+
+  async fileFromExtension(path){
+    return await ytfg.afe.file(await ytfg.ade.getFile(await ytfg.p(chrome.runtime.getPackageDirectoryEntry)(), path, {}));
+  }
 };
