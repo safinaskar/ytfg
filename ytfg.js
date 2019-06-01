@@ -2,7 +2,7 @@
 
 const ytfg = {
   // "p" for "promisify"
-  function p(f){
+  p(f){
     return (...args) => new Promise((resolve, reject) => {
       args.push(result => {
         if(chrome.runtime.lastError){
