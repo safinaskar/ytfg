@@ -36,5 +36,10 @@ const ytfg = {
 
   async fileFromExtension(path){
     return await ytfg.afe.file(await ytfg.ade.getFile(await ytfg.p(chrome.runtime.getPackageDirectoryEntry)(), path, {}));
+  },
+
+  // Для обработки результата chromium-exec
+  bufferToStr(buffer){
+    return new TextDecoder().decode(new Uint8Array(buffer));
   }
 };
