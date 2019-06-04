@@ -41,5 +41,26 @@ const ytfg = {
   // Для обработки результата chromium-exec
   bufferToStr(buffer){
     return new TextDecoder().decode(new Uint8Array(buffer));
+  },
+
+  internalError(message){
+    const fullMessage = chrome.runtime.id + ": internal error: " + message;
+    console.error(fullMessage);
+    alert(fullMessage); // Не печатает backtrace, и это не важно
+    throw Error(fullMessage);
+  },
+
+  // Поведение Chromium может измениться (см. комменты 0 и 1 к https://crbug.com/969672 ), поэтому документация к моим функциям, открывающим вкладки, должна описывать не что они делают, а что они должны делать, т. е. какое поведение от них требуется. Максимально общим образом. Чтобы после смены поведения Chromium можно было сменить реализацию функций без смены кода, который использует эти функции
+  // Открывает страницу расширения в новой вкладке. Открывает в этом же окне, если это возможно. Если нет, то в новом отдельном окне
+  async extensionPageNewTab(currentTab, page){
+    if(/:\/\//.exec(page)){
+      ytfg.internalError("есть \"://\"");
+    }
+
+    if((!chrome.runtime.getManifest.incognito || chrome.runtime.getManifest.incognito === "spanning") && currentTab.incognito){
+      await ytfg.p(chrome.windows.create)({ url: page });
+    }else{
+      await ytfg.p(chrome.tabs.create)({ url: page });
+    }
   }
 };
