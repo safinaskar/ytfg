@@ -62,5 +62,25 @@ const ytfg = {
     }else{
       await ytfg.p(chrome.tabs.create)({ url: page });
     }
+  },
+
+  // Реализует идиому: добавляем listener и ждём пока listener запустится и скажет, что можно больше не слушать
+  // Реализовано так, чтобы в любом случае гарантировать удаление listener'а
+  // Моя функция принимает именно обычный callback, а не асинхронный, иначе callback может сообщить, что можно больше не слушать, в тот момент, когда уже успел запуститься ещё один instance callback'а
+  listen(event, callback){
+    return new Promise((resolve, reject) => {
+      event.addListener(function f(...args){
+        try{
+          const result = callback.apply(null, args);
+          if(!result.continue){
+            event.removeListener(f);
+            resolve(result.result);
+          }
+        }catch(e){
+          event.removeListener(f);
+          reject(e);
+        }
+      });
+    });
   }
 };
