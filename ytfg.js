@@ -82,5 +82,22 @@ const ytfg = {
         }
       });
     });
+  },
+
+  waitForMutation(target, options, callback){
+    return new Promise((resolve, reject) => {
+      new MutationObserver((changes, observer) => {
+        try{
+          const result = callback(changes, observer);
+          if(!result.continue){
+            observer.disconnect();
+            resolve(result.result);
+          }
+        }catch(e){
+          observer.disconnect();
+          reject(e);
+        }
+      }).observe(target, options);
+    });
   }
 };
