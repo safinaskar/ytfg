@@ -65,6 +65,19 @@ const ytfg = {
     }
   },
 
+  // Открывает страницу расширения в новой вкладке. Гарантированно в этом же окне
+  async extensionPageForceNewTab(page){
+    if(/:\/\//.exec(page)){
+      ytfg.internalError("есть \"://\"");
+    }
+
+    if(!chrome.runtime.getManifest.incognito || chrome.runtime.getManifest.incognito === "spanning"){
+      ytfg.internalError("Неправильно настроен manifest");
+    }
+
+    await ytfg.p(chrome.tabs.create)({ url: page });
+  },
+
   // Реализует идиому: добавляем listener и ждём пока listener запустится и скажет, что можно больше не слушать
   // Реализовано так, чтобы в любом случае гарантировать удаление listener'а
   // Моя функция принимает именно обычный callback, а не асинхронный, иначе callback может сообщить, что можно больше не слушать, в тот момент, когда уже успел запуститься ещё один instance callback'а
