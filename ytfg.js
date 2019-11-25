@@ -58,7 +58,7 @@ const ytfg = {
       ytfg.internalError("есть \"://\"");
     }
 
-    if((!chrome.runtime.getManifest.incognito || chrome.runtime.getManifest.incognito === "spanning") && currentTab.incognito){
+    if((!chrome.runtime.getManifest().incognito || chrome.runtime.getManifest().incognito === "spanning") && currentTab.incognito){
       await ytfg.p(chrome.windows.create)({ url: page });
     }else{
       await ytfg.p(chrome.tabs.create)({ url: page });
@@ -71,7 +71,7 @@ const ytfg = {
       ytfg.internalError("есть \"://\"");
     }
 
-    if(!chrome.runtime.getManifest.incognito || chrome.runtime.getManifest.incognito === "spanning"){
+    if(!chrome.runtime.getManifest().incognito || chrome.runtime.getManifest().incognito === "spanning"){
       ytfg.internalError("Неправильно настроен manifest");
     }
 
