@@ -113,5 +113,19 @@ const ytfg = {
         }
       }).observe(target, options);
     });
+  },
+
+  sleep(ms){
+    return new Promise((resolve, reject) => {
+      try{
+        const n = setTimeout(() => resolve(undefined), ms);
+
+        if(typeof n !== "number" || n <= 0){
+          reject(Error("Failed"));
+        }
+      }catch(e){
+        reject(e);
+      }
+    });
   }
 };
