@@ -98,6 +98,23 @@ const ytfg = {
     });
   },
 
+  listenDOM(target, type, callback){
+    return new Promise((resolve, reject) => {
+      target.addEventListener(type, function f(...args){
+        try{
+          const result = callback.apply(null, args);
+          if(!result.continue){
+            target.removeEventListener(type, f);
+            resolve(result.result);
+          }
+        }catch(e){
+          target.removeEventListener(type, f);
+          reject(e);
+        }
+      });
+    });
+  },
+
   waitForMutation(target, options, callback){
     return new Promise((resolve, reject) => {
       new MutationObserver((changes, observer) => {
