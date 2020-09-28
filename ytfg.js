@@ -144,5 +144,17 @@ const ytfg = {
         reject(e);
       }
     });
+  },
+
+  // Создаёт ровно одну ноду из переданного HTML
+  function n(html){
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    if(div.childNodes.length !== 1){
+      throw Error("Count of nodes is not 1");
+    }
+    const result = div.childNodes[0];
+    result.remove();
+    return result;
   }
 };
