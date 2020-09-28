@@ -147,7 +147,7 @@ const ytfg = {
   },
 
   // Создаёт ровно одну ноду из переданного HTML
-  function n(html){
+  n(html){
     const div = document.createElement("div");
     div.innerHTML = html;
     if(div.childNodes.length !== 1){
